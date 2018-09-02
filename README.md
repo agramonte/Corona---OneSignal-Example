@@ -21,6 +21,7 @@ notifyListerner, --- Listerner you want to recieve the events.
 ) 
 ```
 6. For example of the events please run with your credentials.
+7. In the example I am using grid.lua to display the events.
 
 Please note:
 1. Currently only working with Android but changes are in the works so it also works with iOS. 
