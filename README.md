@@ -20,12 +20,39 @@ notifyListerner, --- Listerner you want to recieve the events.
   }
 ) 
 ```
-6. For example of the events please run with your credentials.
-7. In the example I am using grid.lua to display the events.
+6. iOS example:
+```json
+Resposne: 	{
+  "data":{
+    "name":"notification",
+    "type":"remote",
+    "iosPayload": {..},
+    "sound":"default",
+    "alert":"hi. Hope you are doing well.",
+    "applicationState":"inactive"
+  },
+  "name":"notify",
+  "type":"remote"
+}
+```
+8. Android example:
+```json
+Resposne: 	{
+  "data":{
+    "name":"notification",
+    "type":"remote",
+    "androidPayload": {..},
+    "sound":"default",
+    "alert":"hi. Hope you are doing well.",
+    "applicationState":"inactive"
+  },
+  "name":"notify",
+  "type":"remote"
+}
+```
 
 Please note:
-1. Currently only working with Android but changes are in the works so it also works with iOS. 
-2. The notification icons I created and you can reuse them if you want. I just drew a star in the middle of the appropiate sized image.
+1. The notification icons I created and you can reuse them if you want. I just drew a star in the middle of the appropiate sized image.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
