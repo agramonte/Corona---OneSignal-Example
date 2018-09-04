@@ -9,7 +9,11 @@ Instructions to use in your own project.
 ```lua
 local notify = require( "notification" )
 ```
-5. Initialize the library. 
+5. When testing call testing function. Remember to remove it before going live:
+```lua
+notify.isDevBuild()
+```
+6. Initialize the library. 
 ```lua
 notify.init(
 notifyListerner, --- Listerner you want to recieve the events.
@@ -20,7 +24,7 @@ notifyListerner, --- Listerner you want to recieve the events.
   }
 ) 
 ```
-6. iOS example:
+7. iOS example:
 ```json
 Resposne: 	{
   "data":{
