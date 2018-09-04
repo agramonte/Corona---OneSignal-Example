@@ -26,7 +26,7 @@ notifyListerner, --- Listerner you want to recieve the events.
 ```
 7. iOS example:
 ```json
-Resposne: 	{
+Response: 	{
   "data":{
     "name":"notification",
     "type":"remote",
@@ -41,7 +41,7 @@ Resposne: 	{
 ```
 8. Android example:
 ```json
-Resposne: 	{
+Response: 	{
   "data":{
     "name":"notification",
     "type":"remote",

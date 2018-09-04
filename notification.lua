@@ -34,11 +34,38 @@ N.notificationListener = function( event )
     end
 end
 
+N.isError = function(appId)
+
+    local isError = false
+    local errorString = ""
+
+    if system.getInfo("environment") == "simulator" then
+        errorString = errorString.."Not supported on simulator. "
+        isError = true
+    end
+
+    if appId == nil then
+        errorString = errorString.."App Id cannot be nil. "
+        isError = true
+        return
+    end
+
+    if deviceToken == nil then
+        errorString = errorString.."Device token cannot be nil."
+        isError = true
+        return
+    end
+
+    if isError == true then
+        N.eventDispatcher:dispatchEvent( { name="notify", type="error", data=errorString} )
+    end
+
+    return isError
+end
 
 N.registerDevice = function(appId, language, sessions)
 
-    if system.getInfo("environment") == "simulator" then
-        N.eventDispatcher:dispatchEvent( { name="notify", type="error", data="Not supported on simulator"} )
+    if N.isError(appId) == true then
         return
     end
 
