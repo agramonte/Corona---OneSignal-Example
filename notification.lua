@@ -1,7 +1,12 @@
 local json = require "json"
 local notifications
+local deviceType = 1
+local deviceToken
+local requestBody = {}
+local options = {}
 
 local N = {}
+
 N.eventDispatcher = system.newEventDispatcher()
 
 N.get_timezone = function()
@@ -19,7 +24,14 @@ N.networkListener = function(event)
 end
 
 N.notificationListener = function( event )
-    N.eventDispatcher:dispatchEvent( { name="notify", type=event.type, data=event} )
+
+    if event.type == "remoteRegistration"  then
+        
+        deviceToken = event.token
+        N.registerDevice(options.appId, options.language, options.sessions)
+    else
+        N.eventDispatcher:dispatchEvent( { name="notify", type=event.type, data=event} )
+    end
 end
 
 
@@ -30,26 +42,18 @@ N.registerDevice = function(appId, language, sessions)
         return
     end
 
-    --Device type
-    local device_type = 1
-
-    if system.getInfo("platform") == "iOS" then
-        device_type = 0
-    end
-
     --Time zone offset in seconds
     local offsetInSeconds = (N.get_tzoffset(N.get_timezone())/100) * 3600
 
-    local requestBody = {}
     requestBody.app_id = appId 
-    requestBody.device_type = device_type
-    requestBody.identifier = notifications.getDeviceToken()
+    requestBody.device_type = deviceType
+    requestBody.identifier = deviceToken
     requestBody.language = language
     requestBody.timezone = offsetInSeconds
     requestBody.game_version = system.getInfo("appVersionString")
     requestBody.device_os =  system.getInfo("platformVersion")
     requestBody.ad_id = system.getInfo("deviceID")
-    requestBody.device_model = system.getInfo("architectureInfo")
+    requestBody.device_model = system.getInfo("model")
     requestBody.session_count = sessions
 
     local url = "https://onesignal.com/api/v1/players"
@@ -64,13 +68,31 @@ N.registerDevice = function(appId, language, sessions)
     network.request( url, "POST", N.networkListener, params )
 end
 
-N.init = function(listerner, options)
+N.init = function(listerner, opts)
     notifications = require( "plugin.notifications.v2" )
 
+   
+    --Add listerner
     N.eventDispatcher:addEventListener("notify", listerner)
-    N.registerDevice(options.appId, options.language, options.sessions)
+
+    --Save options
+    options = opts
 
     Runtime:addEventListener( "notification", N.notificationListener )
+
+    if system.getInfo("platform") == "ios" then
+        deviceType = 0
+        notifications.registerForPushNotifications()
+    
+    else
+        deviceToken = notifications.getDeviceToken()
+        N.registerDevice(options.appId, options.language, options.sessions)
+    end 
+
+end
+
+N.isDevBuild = function()
+    requestBody.test_type = 1
 end
 
 return N

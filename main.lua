@@ -43,8 +43,25 @@ local showNotification = function(title, message)
 
 end
 
+local setNotificationValues = function(notification)
+    local title
+
+    if notification.androidPayload ~= nil then
+        title = notification.androidPayload.title
+
+    else
+       title = notification.iosPayload.title
+
+    end
+
+    showNotification(title, notification.alert)
+
+end
+
 if ( launchArgs and launchArgs.notification ) then
-    showNotification(launchArgs.notification.androidPayload.title, launchArgs.notification.alert)
+
+    print("Resposne: ", json.prettify(launchArgs.notification))
+    setNotificationValues(launchArgs.notification)
 end
 
 local notifyListerner = function(event) 
@@ -54,13 +71,14 @@ local notifyListerner = function(event)
         return
     end
 
-    showNotification(event.data.androidPayload.title, event.data.alert)
-   
+    setNotificationValues(event.data)
 end
 
 local onSystemEvent = function( event ) 
     
     if ( event.type == "applicationStart" ) then
+
+        notify.isDevBuild() -- remove for prod builds.
         notify.init(notifyListerner, {
             appId = "", -- AppId from One Signal
             language = "en", -- Language. I use the candlelight plugin to get this, but you can also use "os.*" library.
